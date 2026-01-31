@@ -31,17 +31,17 @@ public class BoardingSystem {
             queues[i] = new LinkedList<>();
         }
 
-        System.out.println("\n✈️  Welcome to Multi-Class Boarding System");
+        System.out.println("\nWelcome to Multi-Class Boarding System");
         System.out.println("==========================================");
-        System.out.println("\n📋 Available Commands:");
-        System.out.println("  • CHECKIN <name> <class> [group_id]  - Add passenger to queue");
+        System.out.println("\nAvailable Commands:");
+        System.out.println("  CHECKIN <name> <class> [group_id]  - Add passenger to queue");
         System.out.println("    Classes: 0=Wheelchair, 1=First, 2=Business, 3=Premium, 4=Economy+, 5=Economy, 6=Standby");
-        System.out.println("  • SET_GATE_CAPACITY <number>        - Set gate capacity (default: 5)");
-        System.out.println("  • BOARD                             - Board next group of passengers");
-        System.out.println("  • STATUS                            - Show current queue status");
-        System.out.println("  • HELP                              - Show this help menu");
-        System.out.println("  • EXIT                              - Exit the system");
-        System.out.println("\n💡 Example: CHECKIN John 2 101  (adds John to business class in group 101)");
+        System.out.println("  SET_GATE_CAPACITY <number>        - Set gate capacity (default: 5)");
+        System.out.println("  BOARD                             - Board next group of passengers");
+        System.out.println("  STATUS                            - Show current queue status");
+        System.out.println("  HELP                              - Show this help menu");
+        System.out.println("  EXIT                              - Exit the system");
+        System.out.println("\nExample: CHECKIN John 2 101  (adds John to business class in group 101)");
         System.out.println("==========================================\n");
 
         while (true) {
@@ -68,11 +68,11 @@ public class BoardingSystem {
                     showHelp();
                     break;
                 case "EXIT":
-                    System.out.println("\n👋 Thank you for using the Boarding System. Goodbye!");
+                    System.out.println("\nThank you for using the Boarding System. Goodbye!");
                     sc.close();
                     return;
                 default:
-                    System.out.println("❌ Unknown command. Type 'HELP' for available commands.");
+                    System.out.println("Unknown command. Type 'HELP' for available commands.");
             }
         }
     }
@@ -80,7 +80,7 @@ public class BoardingSystem {
     // Handle CHECKIN <name> <class> [group_id]
     static void handleCheckin(String[] parts) {
         if (parts.length < 3) {
-            System.out.println("❌ Usage: CHECKIN <name> <class> [group_id]");
+            System.out.println("Usage: CHECKIN <name> <class> [group_id]");
             System.out.println("   Example: CHECKIN Alice 2 101");
             return;
         }
@@ -90,13 +90,13 @@ public class BoardingSystem {
         try {
             pClass = Integer.parseInt(parts[2]);
         } catch (NumberFormatException e) {
-            System.out.println("❌ Class must be a number 0-6");
+            System.out.println("Class must be a number 0-6");
             System.out.println("   0=Wheelchair, 1=First, 2=Business, 3=Premium, 4=Economy+, 5=Economy, 6=Standby");
             return;
         }
 
         if (pClass < 0 || pClass > 6) {
-            System.out.println("❌ Class must be between 0 and 6");
+            System.out.println("Class must be between 0 and 6");
             return;
         }
 
@@ -105,7 +105,7 @@ public class BoardingSystem {
             try {
                 groupId = Integer.parseInt(parts[3]);
             } catch (NumberFormatException e) {
-                System.out.println("❌ Group ID must be a number");
+                System.out.println("Group ID must be a number");
                 return;
             }
         }
@@ -127,33 +127,33 @@ public class BoardingSystem {
 
         queues[pClass].offer(p);
         String className = getClassName(pClass);
-        System.out.println("✅ " + name + " checked in to " + className + (groupId != 0 ? " in group " + groupId : ""));
+        System.out.println("+ " + name + " checked in to " + className + (groupId != 0 ? " in group " + groupId : ""));
     }
 
     // Handle SET_GATE_CAPACITY <g>
     static void handleSetGate(String[] parts) {
         if (parts.length != 2) {
-            System.out.println("❌ Usage: SET_GATE_CAPACITY <number>");
+            System.out.println("Usage: SET_GATE_CAPACITY <number>");
             System.out.println("   Example: SET_GATE_CAPACITY 8");
             return;
         }
         try {
             int capacity = Integer.parseInt(parts[1]);
             if (capacity <= 0) {
-                System.out.println("❌ Gate capacity must be a positive number");
+                System.out.println("Gate capacity must be a positive number");
                 return;
             }
             gateCapacity = capacity;
-            System.out.println("✅ Gate capacity set to " + gateCapacity + " passengers");
+            System.out.println("Gate capacity set to " + gateCapacity + " passengers");
         } catch (NumberFormatException e) {
-            System.out.println("❌ Gate capacity must be a number");
+            System.out.println("Gate capacity must be a number");
         }
     }
 
     // Handle BOARD
     static void handleBoard() {
         int boardedThisTick = 0;
-        System.out.println("\n🛫 Boarding passengers...");
+        System.out.println("\nBoarding passengers...");
 
         for (int i = 0; i < MAX_PRIORITY && boardedThisTick < gateCapacity; i++) {
             while (!queues[i].isEmpty() && boardedThisTick < gateCapacity) {
@@ -161,33 +161,33 @@ public class BoardingSystem {
                 // If in group, board whole group
                 if (p.groupId != 0 && groupMap.containsKey(p.groupId)) {
                     Passenger groupMember = groupMap.get(p.groupId);
-                    System.out.println("👨‍👩‍👧‍👦 Boarding group " + p.groupId + ":");
+                    System.out.println("Boarding group " + p.groupId + ":");
                     while (groupMember != null && boardedThisTick < gateCapacity) {
                         boarded.add(groupMember.name);
-                        System.out.println("  ✈️  " + groupMember.name);
+                        System.out.println("  " + groupMember.name);
                         boardedThisTick++;
                         groupMember = groupMember.next;
                     }
                     groupMap.remove(p.groupId);
                 } else {
                     boarded.add(p.name);
-                    System.out.println("  ✈️  " + p.name);
+                    System.out.println("  " + p.name);
                     boardedThisTick++;
                 }
             }
         }
 
         if (boardedThisTick == 0) {
-            System.out.println("📭 No passengers to board.");
+            System.out.println("No passengers to board.");
         } else {
-            System.out.println("✅ Total boarded this round: " + boardedThisTick + " passengers");
+            System.out.println("Total boarded this round: " + boardedThisTick + " passengers");
         }
         System.out.println();
     }
 
     // Handle STATUS
     static void handleStatus() {
-        System.out.println("\n📊 Current Boarding Status");
+        System.out.println("\nCurrent Boarding Status");
         System.out.println("==========================");
         
         int totalWaiting = 0;
@@ -199,24 +199,24 @@ public class BoardingSystem {
         }
         
         System.out.println("  --------------------------");
-        System.out.println("  📋 Total waiting: " + totalWaiting + " passengers");
-        System.out.println("  ✅ Total boarded: " + boarded.size() + " passengers");
-        System.out.println("  🚪 Gate capacity: " + gateCapacity + " passengers per round");
+        System.out.println("  Total waiting: " + totalWaiting + " passengers");
+        System.out.println("  Total boarded: " + boarded.size() + " passengers");
+        System.out.println("  Gate capacity: " + gateCapacity + " passengers per round");
         System.out.println("==========================\n");
     }
 
     // Show help menu
     static void showHelp() {
-        System.out.println("\n📋 Available Commands:");
+        System.out.println("\nAvailable Commands:");
         System.out.println("==========================");
-        System.out.println("  • CHECKIN <name> <class> [group_id]  - Add passenger to queue");
+        System.out.println("  CHECKIN <name> <class> [group_id]  - Add passenger to queue");
         System.out.println("    Classes: 0=Wheelchair, 1=First, 2=Business, 3=Premium, 4=Economy+, 5=Economy, 6=Standby");
-        System.out.println("  • SET_GATE_CAPACITY <number>        - Set gate capacity (default: 5)");
-        System.out.println("  • BOARD                             - Board next group of passengers");
-        System.out.println("  • STATUS                            - Show current queue status");
-        System.out.println("  • HELP                              - Show this help menu");
-        System.out.println("  • EXIT                              - Exit the system");
-        System.out.println("\n💡 Examples:");
+        System.out.println("  SET_GATE_CAPACITY <number>        - Set gate capacity (default: 5)");
+        System.out.println("  BOARD                             - Board next group of passengers");
+        System.out.println("  STATUS                            - Show current queue status");
+        System.out.println("  HELP                              - Show this help menu");
+        System.out.println("  EXIT                              - Exit the system");
+        System.out.println("\nExamples:");
         System.out.println("  CHECKIN Alice 2 101  (adds Alice to business class in group 101)");
         System.out.println("  CHECKIN Bob 5       (adds Bob to economy class, no group)");
         System.out.println("  SET_GATE_CAPACITY 8");
@@ -226,13 +226,13 @@ public class BoardingSystem {
     // Get class name for display
     static String getClassName(int pClass) {
         switch (pClass) {
-            case 0: return "🦽 Wheelchair";
-            case 1: return "💎 First Class";
-            case 2: return "💼 Business Class";
-            case 3: return "⭐ Premium Economy";
-            case 4: return "✈️  Economy Plus";
-            case 5: return "✈️  Economy";
-            case 6: return "⏰ Standby";
+            case 0: return "Wheelchair";
+            case 1: return "First Class";
+            case 2: return "Business Class";
+            case 3: return "Premium Economy";
+            case 4: return "Economy Plus";
+            case 5: return "Economy";
+            case 6: return "Standby";
             default: return "Unknown Class " + pClass;
         }
     }
