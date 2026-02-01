@@ -1,9 +1,5 @@
 import java.util.*;
 
-/**
- * Represents a single score submission.
- * Implements Comparable to allow sorting by score.
- */
 class ScoreEntry implements Comparable<ScoreEntry> {
     private final String playerId;
     private final int score;
@@ -26,20 +22,12 @@ class ScoreEntry implements Comparable<ScoreEntry> {
         return String.format("%s: %d", playerId, score);
     }
 
-    /**
-     * Comparison logic for the PriorityQueue.
-     * We want natural ordering (ascending) for the Min-Heap.
-     */
     @Override
     public int compareTo(ScoreEntry other) {
         return Integer.compare(this.score, other.score);
     }
 }
 
-/**
- * Core Logic for the Leaderboard.
- * Uses a Min-Heap to maintain the Top K scores.
- */
 class Leaderboard {
     private PriorityQueue<ScoreEntry> minHeap;
     private int capacity;
@@ -48,30 +36,19 @@ class Leaderboard {
     public Leaderboard() {
         this.isInitialized = false;
     }
-
-    /**
-     * INIT <k>
-     * Initializes the leaderboard with a fixed capacity.
-     */
+    
     public void init(int k) {
         if (k <= 0) {
             System.out.println("Error: K must be positive.");
             return;
         }
-        // Min-Heap (Default behavior of PriorityQueue is ascending order)
+        
         this.minHeap = new PriorityQueue<>();
         this.capacity = k;
         this.isInitialized = true;
         System.out.println("Leaderboard initialized with size " + k);
     }
 
-    /**
-     * SCORE <player> <val>
-     * Logic:
-     * 1. If heap is not full, add it.
-     * 2. If heap is full, compare new score with Root (Gatekeeper).
-     * 3. If New Score > Root, replace Root.
-     */
     public void submitScore(String player, int score) {
         if (!isInitialized) {
             System.out.println("Error: Please run INIT <k> first.");
@@ -84,28 +61,18 @@ class Leaderboard {
             minHeap.offer(newEntry);
             System.out.println("Score added.");
         } else {
-            // The heap is full. Check the "Gatekeeper" (the smallest of the top K)
             ScoreEntry gatekeeper = minHeap.peek();
 
             if (gatekeeper != null && score > gatekeeper.getScore()) {
-                // New score is better than the lowest on the board.
-                // Remove the lowest and add the new one.
                 ScoreEntry removed = minHeap.poll();
                 minHeap.offer(newEntry);
                 System.out.println("Score qualified! Removed " + removed + " and added " + newEntry);
             } else {
-                // New score is not high enough to beat the Gatekeeper.
                 System.out.println("Score ignored (Too low to make Top " + capacity + ").");
             }
         }
     }
 
-    /**
-     * SHOW_TOP
-     * Prints the leaderboard.
-     * Note: We must sort a copy of the data for display because
-     * the Heap only guarantees the Root is the minimum, not total sorted order.
-     */
     public void showTop() {
         if (!isInitialized) {
             System.out.println("Error: Leaderboard not initialized.");
@@ -131,9 +98,6 @@ class Leaderboard {
     }
 }
 
-/**
- * Main Interface to handle CLI Commands.
- */
 public class GameCLI {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
