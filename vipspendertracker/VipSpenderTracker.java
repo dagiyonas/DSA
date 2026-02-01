@@ -2,10 +2,10 @@ import java.util.*;
 
 public class VipSpenderTracker {
 
-    // --- Configuration ---
+    
     private static final int K = 3; // We want the Top 3
 
-    // --- Data Structures ---
+    // ---
     
     // 1. Hash Map: UserID -> TotalMoney (The Source of Truth)
     private Map<String, Double> spendingMap;
