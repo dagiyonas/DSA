@@ -86,7 +86,6 @@ class Leaderboard {
 
         System.out.println("=== LEADERBOARD (Top " + capacity + ") ===");
         
-        // Create a copy to sort for display (High to Low) without ruining the Heap
         List<ScoreEntry> sortedList = new ArrayList<>(minHeap);
         sortedList.sort(Collections.reverseOrder());
 
