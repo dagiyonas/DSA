@@ -162,11 +162,18 @@ public class BoardingSystem {
                 if (p.groupId != 0 && groupMap.containsKey(p.groupId)) {
                     Passenger groupMember = groupMap.get(p.groupId);
                     System.out.println("Boarding group " + p.groupId + ":");
-                    while (groupMember != null && boardedThisTick < gateCapacity) {
+                    
+                    // Remove all group members from their respective queues
+                    while (groupMember != null) {
+                        // Remove from queue if still there (might be different priority)
+                        queues[groupMember.pClass].remove(groupMember);
                         boarded.add(groupMember.name);
                         System.out.println("  " + groupMember.name);
                         boardedThisTick++;
                         groupMember = groupMember.next;
+                        
+                        // Stop if gate capacity reached
+                        if (boardedThisTick >= gateCapacity) break;
                     }
                     groupMap.remove(p.groupId);
                 } else {
